@@ -56,16 +56,26 @@ void main()
 	printf("국어 : %d, 영어 : %d, 수학 : %d\n", iKorean, iEnglish, iMath);
 	printf("총점 : %d\n", iTot);*/
 
-	int age;
-	double height;
-	printf("나이와 키를 입력하세요 : ");
-	scanf("%d%lf", &age, &height);//age의 주소공간에 값을 직접 입력
-	printf("나이는 %d, 키는 %0.2f 입니다.\n",age,height);
+	//int age;
+	//double height;
+	//printf("나이와 키를 입력하세요 : ");
+	//scanf("%d%lf", &age, &height);//age의 주소공간에 값을 직접 입력
+	//printf("나이는 %d, 키는 %.2lf 입니다.\n",age,height);
 
-	char name[128];
-	scanf("%s", name);
-	printf("이름은 %s 입니다.", name);
+	//char name[128];
+	//scanf("%s", name);
+	//printf("이름은 %s입니다.", name);
 	
-	return 0;
+	
 
+	char grade;
+	char name[20];
+
+	printf("학점 입력 : ");
+	scanf("%c", &grade);
+	printf("이름 입력 : ");
+	scanf("%s", name);
+	printf("%s의 학점은 %c입니다.\n", name, grade);
+
+	return 0;
 }
