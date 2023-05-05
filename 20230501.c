@@ -90,14 +90,13 @@ int main()
 	}*/
 
 	unsigned int n;
-	const int COL = 4;
+
+	const int COL = 3;
 
 	scanf("%d", &n);
 
 	printf("              ±¸ ±¸ ´Ü               \n");
 
-
-	int i = 2;
 	for (int i = 2; i <= n; i += COL)
 	{
 		printf("--------------------------------------\n");
