@@ -1,29 +1,59 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <Windows.h>
+#include<stdio.h>
+#include<string.h>
 
+int isSeries(char*, int);
+int check(char*, int);
 
 int main()
 {
-	int length = 0;
+	
+	int n;
+	scanf("%d", &n);
+	getchar();
+	
 
-	char ch;
-
-	int max = 0;
-
-	while (scanf("%c", &ch) != -1)
+	int answer = 0;
+	for (int i = 0; i < n; i++)
 	{
-		if (ch == '\n')
-		{
-			if (max < length)
-				max = length;
-
-			length = 0;
-		}
-		else length++;
+		
+		char str[101];
+		gets(str);
+		int len = strlen(str);
+		answer += check(str,len);
 	}
-	printf("가장 긴 단어의 길이 : %d", max);
+	printf("%d", answer);
 }
+int check(char* str, int len)
+{
+	char temp[101];
+	temp[0] = str[0];
+
+	int temp_len = 1;
+
+	for (int j = 1; j < len; j++)
+	{
+		if (!isSeries(str, j))//연속되지 않았으면 저장된 배열 뒤져서 같은 문자 있는지 탐색, 없으면 넣기
+		{
+			for (int k = 0; k < temp_len; k++)
+			{
+				if (temp[k] == str[j])
+					return 0;
+			}
+			temp[temp_len] = str[j];
+			temp_len++;
+		}
+	}
+	return 1;
+}
+int isSeries(char* str,int idx)
+{
+	if (str[idx] == str[idx - 1])
+		return 1;
+	else
+		return 0;
+}
+
 
 //void input_nums(int* lotto_nums, int size);
 //void print_nums(int* lotto_nums, int size);
