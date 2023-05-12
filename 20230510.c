@@ -16,7 +16,7 @@ int main()
 	int dir = 0;
 
 	int a = 1;
-	while (idx < N*2 - 1)
+	while (idx < N * 2 - 1)
 	{
 		if (idx < N)
 		{
@@ -36,23 +36,23 @@ int main()
 					cnt++;
 				}
 			}
-			
+
 		}
 		else
 		{
 			if (dir)
 			{
-				for(int i = a;i<=idx-a;i++)
+				for (int i = a; i <= idx - a; i++)
 				{
-					arr[i][idx-i] = cnt;
+					arr[i][idx - i] = cnt;
 					cnt++;
 				}
 			}
 			else
 			{
-				for (int i = a; i <= idx-a; i++)
+				for (int i = a; i <= idx - a; i++)
 				{
-					arr[idx-i][i] = cnt;
+					arr[idx - i][i] = cnt;
 					cnt++;
 				}
 			}
@@ -68,7 +68,7 @@ int main()
 
 	for (int i = 0; i < N; i++)
 	{
-		for (int j = 0; j < N; j++ )
+		for (int j = 0; j < N; j++)
 			printf("%3d", arr[i][j]);
 		printf("\n");
 	}
