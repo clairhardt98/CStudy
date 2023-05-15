@@ -8,9 +8,14 @@
 
 //CreateConsoleScreenBuffer
 //GetAsyncKeyState
-//
-enum menu { INPUT = 1, OUTPUT, SEARCH,EXIT };
+
+enum menu
+{
+	INPUT = 1, OUTPUT, SEARCH, EXIT
+};
 #define GRADE 3
+
+typedef struct student Student;
 struct student
 {
 	int stnum;
@@ -21,30 +26,29 @@ struct student
 	int total;
 	double avg;
 	char grade;
+
+	Student* next;
 };
 
 typedef enum menu MENU;
-typedef struct student Student;
 
-void input(Student*, int);
-void output(Student*, int);
-void search(Student*,  int);
 
-void swap(Student*, Student*);
+void input(int);
+void output(int);
+void search(int);
+
+void deleteAll();
 
 char getGrade(double);
-int stnumsearch(Student*,int, int);
+int stnumsearch(Student*, int, int);
 
-int isNullArr = 1;
+Student* Head = NULL;
 
 int main()
 {
 	int N;
 	printf("총 학생 수 : ");
 	scanf("%d", &N);
-
-	Student* starr = (Student*)malloc(N * sizeof(Student));
-	if (starr == NULL) exit(1);
 
 	while (1)
 	{
@@ -57,33 +61,32 @@ int main()
 			continue;
 		}
 		MENU menu;
-		
+
 		menu = m;
-		
+
 		switch (menu)
 		{
 		case INPUT:
 			printf("\n");
-			input(starr, N);
-			isNullArr = 0;
+			input(N);
 			break;
 		case OUTPUT:
 			printf("\n");
-			output(starr, N);
+			output(N);
 			break;
 		case SEARCH:
 			printf("\n");
-			search(starr, N);
+			search(N);
 			break;
 		case EXIT:
-			free(starr);
+			deleteAll();
 			return 0;
 			break;
 		}
 	}
 }
 
-int stnumsearch(Student* starr, int Stnum,int idx)
+int stnumsearch(Student* starr, int Stnum, int idx)
 {
 	for (int i = 0; i < idx; i++)
 	{
@@ -93,57 +96,97 @@ int stnumsearch(Student* starr, int Stnum,int idx)
 	return 1;
 }
 
-void input(Student* starr, int size)
+void input(int size)
 {
-	
+
 	for (int i = 0; i < size; i++)
 	{
+		//새 노드 추가
+		Student* ptr;
+		Student* newStudent = (Student*)malloc(sizeof(Student));
+		newStudent->next = NULL;
 		printf("학번 : ");
-		scanf("%d", &starr[i].stnum);
-		if (!stnumsearch(starr, starr[i].stnum, i))
+		scanf("%d", &newStudent->stnum);
+
+		int flag = 0;//반복문 탈출을 위한 flag
+
+		for (ptr = Head; ptr; ptr = ptr->next)
 		{
-			printf("중복된 학번이 있습니다. 다시 입력하세요\n");
-			i--;
-			continue;
+			if (ptr->stnum == newStudent->stnum)
+			{
+				printf("같은 학번이 존재합니다. 다시 입력하세요.\n");
+				free(newStudent);
+				flag = 1;
+				i--;
+				break;
+			}
 		}
+		if (flag) continue;
+
 		printf("이름 : ");
-		scanf("%s", &starr[i].name);
+		scanf("%s", &newStudent->name);
+		
 		printf("국어, 영어, 수학 점수 : ");
 
-		scanf("%d %d %d",&starr[i].kgrade, &starr[i].egrade, &starr[i].mgrade);//성적들 입력
+		scanf("%d %d %d", &newStudent->kgrade, &newStudent->egrade, &newStudent->mgrade);//성적들 입력
+
+		//printf("학생 %s 입력받음\n", newStudent->name);
+		newStudent->total = newStudent->kgrade + newStudent->egrade + newStudent->mgrade;
+		newStudent->avg = (double)newStudent->total / GRADE;
+		newStudent->grade = getGrade(newStudent->avg);
+
 		
-		starr[i].total = starr[i].kgrade + starr[i].egrade + starr[i].mgrade;
-		starr[i].avg = (double)starr[i].total / GRADE;
-		starr[i].grade = getGrade(starr[i].avg);
+
+		if (Head == NULL)//첫 학생이면
+		{
+			Head = newStudent;
+		}
+		else
+		{
+			//가장 앞에 추가
+			if (Head->avg <= newStudent->avg)
+			{
+				newStudent->next = Head;
+				Head = newStudent;
+			}
+			else//중간에 추가
+			{
+				for (ptr = Head; ptr->next; ptr = ptr->next)//ptr->next가 null 이 아닌 동안
+				{
+					
+					if (ptr->avg > newStudent->avg && ptr->next->avg < newStudent->avg)//중간에 끼어들어갈 위치 찾기
+					{
+						newStudent->next = ptr->next;
+						ptr->next = newStudent;
+						break;
+					}
+				}
+				ptr->next = newStudent;//마지막에 추가
+			}
+		}
 	}
 }
 
-void output(Student* starr, int size)
+void output(int size)
 {
-	if (isNullArr)
+	if (Head == NULL)
 	{
 		printf("입력받지 않았습니다. 입력을 먼저 해주세요.\n");
 		return 0;
 	}
+
+	Student* ptr;
 	printf("   학번    이름    국어    영어    수학    총점    평균    학점\n");
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = i+1; j < size; j++)
-		{
-			if (starr[i].avg < starr[j].avg)
-				swap(&starr[i], &starr[j]);
-		}
-	}
-	for (int i = 0; i < size; i++)
+	for (ptr = Head;ptr;ptr=ptr->next)
 	{
 		printf("%7d	%7s	%7d	%7d	%7d	%7d	%7.1lf %7c\n",
-			starr[i].stnum, starr[i].name, starr[i].kgrade, starr[i].egrade, starr[i].mgrade, starr[i].total, starr[i].avg, starr[i].grade);
+			ptr->stnum, ptr->name, ptr->kgrade, ptr->egrade, ptr->mgrade, ptr->total, ptr->avg, ptr->grade);
 	}
 }
 
-void search(Student* starr, int size)
+void search(int size)
 {
-	if (isNullArr)
+	if (Head == NULL)
 	{
 		printf("입력받지 않았습니다. 입력을 먼저 해주세요.\n");
 		return 0;
@@ -155,24 +198,32 @@ void search(Student* starr, int size)
 	printf("이름으로 검색합니다 : ");
 
 	gets(temp);
-	
-	for (int i = 0; i < size; i++)
+
+	Student* ptr;
+
+	for (ptr = Head;ptr;ptr = ptr->next)
 	{
-		if (!strcmp(temp,starr[i].name))
+		if (!strcmp(temp,ptr->name))
 		{
 			printf("\n   이름    학점    국어    영어    수학    총점\n");
-			printf("%7s %7c %7d %7d %7d %7d\n", starr[i].name, starr[i].grade, starr[i].kgrade, starr[i].egrade, starr[i].mgrade, starr[i].total);
+			printf("%7s %7c %7d %7d %7d %7d\n", ptr->name, ptr->grade, ptr->kgrade, ptr->egrade, ptr->mgrade, ptr->total);
 			return 0;
 		}
 	}
 	printf("해당 이름의 학생이 없습니다.\n");
 }
 
-void swap(Student* left, Student* right)
+void deleteAll()
 {
-	Student temp = *left;
-	*left = *right;
-	*right = temp;
+	Student* ptr = Head;
+	
+	while (ptr != NULL)
+	{
+		Student* nxt = ptr->next;
+		//printf("학번 %d의 학생 삭제\n", ptr->stnum);
+		free(ptr);
+		ptr = nxt;
+	}
 }
 
 char getGrade(double avg)
