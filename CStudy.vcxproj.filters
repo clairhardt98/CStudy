@@ -51,5 +51,14 @@
     <ClCompile Include="20230515.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="20230517.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="input.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="average.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
